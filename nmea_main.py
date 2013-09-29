@@ -5,7 +5,7 @@
                                  A QGIS plugin
 
 This plugin loads nmea data into QGIS. It supports GGA, GLL and RMC sentences.
-You can also choose to write the data to disk as a shapefile.
+You can also choose to write the data on disk as a shapefile.
 
                               -------------------
         begin                : 2013-05-11
@@ -70,6 +70,7 @@ class nmea_main:
         if len(self.filenames)<>0:
             from os.path import isfile
             if isfile(self.filenames[0]):
+
                 self.dlg.ui.lineEdit.setText(self.filenames[0])
                 settings=QSettings()
                 settings.setValue('/nmea2qgis/dir',QVariant(self.filenames[0]))

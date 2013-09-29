@@ -10,9 +10,9 @@
 
 [general]
 name=nmea2qgis
-qgisMinimumVersion=1.8
+qgisMinimumVersion=1.7
 description=load nmea file to qgis
-version=0.1
+version=0.2
 author=Maciej Olszewski
 email=mackoo@opoczta.pl
 

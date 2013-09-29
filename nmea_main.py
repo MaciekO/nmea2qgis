@@ -66,13 +66,14 @@ class nmea_main:
         self.dlg.show()
 
     def dialog(self):
-        self.filename = self.fd.getOpenFileName()
-        from os.path import isfile
-        if isfile(self.filename):
-            self.dlg.ui.lineEdit.setText(self.filename)
-            settings=QSettings()
-            settings.setValue('/nmea2qgis/dir',QVariant(self.filename))
-            self.fd.setDirectory(os.path.dirname(str(self.filename)))
+        self.filenames = self.fd.getOpenFileNames(None,"","","all (*.*);;nmea (*.nmea)")
+        if len(self.filenames)<>0:
+            from os.path import isfile
+            if isfile(self.filenames[0]):
+                self.dlg.ui.lineEdit.setText(self.filenames[0])
+                settings=QSettings()
+                settings.setValue('/nmea2qgis/dir',QVariant(self.filenames[0]))
+                self.fd.setDirectory(os.path.dirname(str(self.filenames[0])))
 
 
     def exit(self):
@@ -85,13 +86,15 @@ class nmea_main:
 
 
     def addLayer(self):
-        try:
-            nmeafile=open(self.dlg.ui.lineEdit.text())
-            self.nmeaDict(nmeafile)
-            self.addSave()
-        except:
-            if self.dlg.ui.lineEdit.text()=='': QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer, \ncheck the file path")
-            else:   QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer")
+
+        for filename in self.filenames:
+            try:
+                nmeafile=open(filename)
+                self.nmeaDict(nmeafile)
+                self.addSave(filename)
+            except:
+                if self.dlg.ui.lineEdit.text()=='': QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer, \ncheck the file path")
+                else:   QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer")
 
     def nmeaDict(self,nmeafile):
         self.nl=self.dlg3.ui.nullBox.value()
@@ -146,11 +149,18 @@ class nmea_main:
 
 
 
-    def addSave(self):
+    def addSave(self,filename):
+        import ntpath
+        try:
+            layername=ntpath.basename(str(filename))
+
+        except:
+            layername="nmealayer"
+
         fields = {}
         self.epsg4326= QgsCoordinateReferenceSystem()
         self.epsg4326.createFromString("epsg:4326")
-        nmealayer = QgsVectorLayer("Point?crs=epsg:4326", "nmealeayer", "memory")
+        nmealayer = QgsVectorLayer("Point?crs=epsg:4326", layername, "memory")
         nmealayer.startEditing()
 
         pr = nmealayer.dataProvider()

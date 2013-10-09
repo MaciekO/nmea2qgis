@@ -53,7 +53,7 @@ class nmea_main:
         self.fd1 = QFileDialog()
         settings=QSettings()
         try:
-            dir=settings.value('/nmea2qgis/dir', QVariant('C:\Users')).toString()
+            dir=settings.value('/nmea2qgis/dir', 'C:\Users')
             self.fd.setDirectory(dir)
         except:
             pass
@@ -73,7 +73,7 @@ class nmea_main:
 
                 self.dlg.ui.lineEdit.setText(self.filenames[0])
                 settings=QSettings()
-                settings.setValue('/nmea2qgis/dir',QVariant(self.filenames[0]))
+                settings.setValue('/nmea2qgis/dir',self.filenames[0])
                 self.fd.setDirectory(os.path.dirname(str(self.filenames[0])))
 
 
@@ -224,10 +224,11 @@ class nmea_main:
         for a,lat in enumerate(self.lat):
             fet = QgsFeature()
             fet.setGeometry(QgsGeometry.fromPoint(QgsPoint(self.lon[a],lat)))
-            b=0
+            attributess=[]
             for aa in att:
-                fet.addAttribute(b,QVariant(aa[a]))
-                b+=1
+                attributess.append(aa[a])
+
+            fet.setAttributes(attributess)
             fett.append(fet)
 
         if self.dlg3.ui.saveCheck.isChecked():

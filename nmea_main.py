@@ -89,13 +89,13 @@ class nmea_main:
     def addLayer(self):
 
         for filename in self.filenames:
-            try:
+##            try:
                 nmeafile=open(filename)
                 self.nmeaDict(nmeafile)
                 self.addSave(filename)
-            except:
-                if self.dlg.ui.lineEdit.text()=='': QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer, \ncheck the file path")
-                else:   QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer")
+##            except:
+##                if self.dlg.ui.lineEdit.text()=='': QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer, \ncheck the file path")
+##                else:   QMessageBox.information(self.iface.mainWindow(), "Info", "Cannot add nmealayer")
 
     def nmeaDict(self,nmeafile):
         self.nl=self.dlg3.ui.nullBox.value()
@@ -158,7 +158,7 @@ class nmea_main:
         except:
             layername="nmealayer"
 
-        fields = {}
+
         self.epsg4326= QgsCoordinateReferenceSystem()
         self.epsg4326.createFromString("epsg:4326")
         nmealayer = QgsVectorLayer("Point?crs=epsg:4326", layername, "memory")
@@ -170,52 +170,42 @@ class nmea_main:
         if self.dlg3.ui.latCheck.isChecked():
                pr.addAttributes( [ QgsField("latitude", QVariant.Double)] )
                att.append(self.lat)
-               fields[a]=QgsField("latitude", QVariant.Double)
                a+=1
         if self.dlg3.ui.lonCheck.isChecked():
                pr.addAttributes( [ QgsField("longitude", QVariant.Double)] )
                att.append(self.lon)
-               fields[a]=QgsField("longitude", QVariant.Double)
                a+=1
         if self.dlg3.ui.utcCheck.isChecked():
                pr.addAttributes( [ QgsField("utc", QVariant.String)] )
                att.append(self.utc)
-               fields[a]=QgsField("utc", QVariant.String)
                a+=1
         if self.dlg3.ui.svCheck.isChecked():
                pr.addAttributes( [ QgsField("numSV", QVariant.Double)] )
                att.append(self.numSV)
-               fields[a]=QgsField("numSV", QVariant.Double)
                a+=1
         if self.dlg3.ui.hdopCheck.isChecked():
                pr.addAttributes( [ QgsField("hdop", QVariant.Double)] )
                att.append(self.hdop)
-               fields[a]=QgsField("hdop", QVariant.Double)
                a+=1
         if self.dlg3.ui.mslCheck.isChecked():
                pr.addAttributes( [ QgsField("msl", QVariant.Double)] )
                att.append(self.msl)
-               fields[a]=QgsField("msl", QVariant.Double)
                a+=1
         if self.dlg3.ui.geoidCheck.isChecked():
                pr.addAttributes( [ QgsField("geoid", QVariant.Double)] )
                att.append(self.geoid)
-               fields[a]=QgsField("geoid", QVariant.Double)
                a+=1
         if self.dlg3.ui.speedCheck.isChecked():
                pr.addAttributes( [ QgsField("speed", QVariant.Double)] )
                att.append(self.speed)
-               fields[a]=QgsField("speed", QVariant.Double)
                a+=1
         if self.dlg3.ui.fixstatusCheck.isChecked():
                pr.addAttributes( [ QgsField("fixstatus", QVariant.Double)] )
                att.append(self.fixstatus)
-               fields[a]=QgsField("fixstatus", QVariant.Double)
                a+=1
         if self.dlg3.ui.datastatusCheck.isChecked():
                pr.addAttributes( [ QgsField("datastatus", QVariant.Double)] )
                att.append(self.datastatus)
-               fields[a]=QgsField("datastatus", QVariant.Double)
                a+=1
 
 
@@ -227,21 +217,18 @@ class nmea_main:
             attributess=[]
             for aa in att:
                 attributess.append(aa[a])
-
             fet.setAttributes(attributess)
             fett.append(fet)
 
-        if self.dlg3.ui.saveCheck.isChecked():
-            self.filename = self.fd.getSaveFileName()
-            writer = QgsVectorFileWriter(self.filename, "CP1250", fields, QGis.WKBPoint, self.epsg4326, "ESRI Shapefile")
-            for fet in fett:
-                writer.addFeature(fet)
-            del writer
+
         pr.addFeatures(fett)
 
         nmealayer.commitChanges()
         nmealayer.updateExtents()
         QgsMapLayerRegistry.instance().addMapLayer(nmealayer)
+        if self.dlg3.ui.saveCheck.isChecked():
+            self.filename = self.fd.getSaveFileName()
+            error = QgsVectorFileWriter.writeAsVectorFormat(nmealayer, self.filename, "CP1250", self.epsg4326, "ESRI Shapefile")
 
         self.iface.mapCanvas().zoomToFullExtent()
 

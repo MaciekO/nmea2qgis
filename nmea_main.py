@@ -241,14 +241,14 @@ class nmea_main:
         if data[3]=='N':
             latt=float(data[2][:2])+float(data[2][2:])/60
         elif data[3]=='S':
-            latt=-1*float(data[2][:2])+float(data[2][2:])/60
+            latt=-1*float(data[2][:2])-float(data[2][2:])/60
         else:
             latt=self.nl
         ind=string.find(data[4],".")
         if data[5]=='E':
             lonn=float(data[4][:(ind-2)])+float(data[4][(ind-2):])/60
         elif data[5]=='W':
-            lonn=-1*float(data[4][:(ind-2)])+float(data[4][(ind-2):])/60
+            lonn=-1*float(data[4][:(ind-2)])-float(data[4][(ind-2):])/60
         else:
             lonn=self.nl
         try:    numsv=float(data[7])
@@ -279,14 +279,14 @@ class nmea_main:
         if data[4]=='N':
             latt=float(data[3][:2])+float(data[3][2:])/60
         elif data[4]=="S":
-            latt=-1*float(data[3][:2])+float(data[3][2:])/60
+            latt=-1*float(data[3][:2])-float(data[3][2:])/60
         else:
             latt=self.nl
         ind=string.find(data[5],".")
         if data[6]=='E':
             lonn=float(data[5][:(ind-2)])+float(data[5][(ind-2):])/60
         elif data[6]=='W':
-            lonn=-1*float(data[5][:(ind-2)])+float(data[5][(ind-2):])/60
+            lonn=-1*float(data[5][:(ind-2)])-float(data[5][(ind-2):])/60
         else:
             lonn=self.nl
         try:    speed=float(data[7])
@@ -310,14 +310,14 @@ class nmea_main:
         if data[2]=='N':
             latt=float(data[1][:2])+float(data[1][2:])/60
         elif data[2]=='S':
-            latt=-1*float(data[1][:2])+float(data[1][2:])/60
+            latt=-1*float(data[1][:2])-float(data[1][2:])/60
         else:
             latt=self.nl
         ind=string.find(data[3],".")
         if data[4]=='E':
             lonn=float(data[3][:(ind-2)])+float(data[3][(ind-2):])/60
         elif data[4]=='W':
-            lonn=-1*float(data[3][:(ind-2)])+float(data[3][(ind-2):])/60
+            lonn=-1*float(data[3][:(ind-2)])-float(data[3][(ind-2):])/60
         else:
             lonn=self.nl
         try:
